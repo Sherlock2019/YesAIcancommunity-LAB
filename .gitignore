@@ -2,6 +2,11 @@
 # YES AI CAN Sandbox .gitignore
 # ==========================
 
+
+# Ignore vector stores and embeddings
+services/api/.chroma_store/
+services/api/.rag_store/
+
 # --------------------------
 # Python + Env
 # --------------------------
