@@ -1,0 +1,118 @@
+# ==========================
+# YES AI CAN Sandbox .gitignore
+# ==========================
+
+# --------------------------
+# Python + Env
+# --------------------------
+*.pyc
+*.pyo
+__pycache__/
+.venv/
+env/
+venv/
+pip-wheel-metadata/
+
+# --------------------------
+# Streamlit + Temp
+# --------------------------
+.streamlit/
+.tmp_runs/
+*.tmp
+*.log
+*.pid
+
+# --------------------------
+# Backups / Snapshots
+# --------------------------
+*.bak
+*.ok.*
+*.old
+*.backup
+*.tar.gz
+*.zip
+*.7z
+*.rar
+
+# --------------------------
+# Datasets / Artifacts
+# (Appraisal A→F workflow outputs)
+# --------------------------
+# A: Intake artifacts
+intake_table.csv
+evidence_index.json
+
+# B: Privacy & Features
+asset_anonymized.csv
+features.parquet
+comps_used.json
+
+# C: Valuation
+valuation_ai*.csv
+
+# D: Policy / Decision
+verification_status*.csv
+policy_haircuts*.csv
+risk_decision*.csv
+
+# E: Human Review
+reviewed_appraisal*.csv
+production_meta.json
+model-*.joblib
+
+# F: Reporting
+credit_collateral_input*.csv
+asset_appraisal_report*.json
+opportunities*.json
+
+# --------------------------
+# Raw CSV / data files
+# (Ignore ALL CSV unless manually whitelisted)
+# --------------------------
+*.csv
+!README.csv   # example of allowing a specific file
+
+# --------------------------
+# Machine learning model files
+# --------------------------
+*.joblib
+*.pickle
+*.pkl
+*.h5
+*.pt
+*.onnx
+*.ckpt
+
+# --------------------------
+# Data dumps
+# --------------------------
+data/
+datasets/
+
+# --------------------------
+# Node / JS
+# --------------------------
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# --------------------------
+# OS/System files
+# --------------------------
+.DS_Store
+Thumbs.db
+
+# --------------------------
+# Secrets
+# --------------------------
+.env
+.env.*
+secrets.json
+
+# --------------------------
+# Docker / Build
+# --------------------------
+*.deb
+*.whl
+dist/
+build/

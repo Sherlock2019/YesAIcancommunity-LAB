@@ -1,0 +1,180 @@
+[
+  {
+    "id": "human_dzoan_2",
+    "name": "dzoan nguyen tran",
+    "department": "cloud architect",
+    "region": "APAC",
+    "skills": [
+      "cloud",
+      "ai",
+      "blockchain engineer and mostly architect of a BETTER WORLD"
+    ],
+    "ai_services": [
+      "kpi-briefs",
+      "scenario-simulator",
+      "risk-radar"
+    ],
+    "sme_level": "⭐⭐⭐⭐ Expert",
+    "created_at": "2025-01-02",
+    "updated_at": "2025-02-02"
+  },
+  {
+    "id": "human_jarvis_1",
+    "name": "jarvis",
+    "department": "accounting",
+    "region": "Americas",
+    "skills": [
+      "account"
+    ],
+    "ai_services": [
+      "incident-summarizer",
+      "openstack-validator",
+      "capacity-forecast"
+    ],
+    "sme_level": "⭐⭐⭐ Skilled",
+    "created_at": "2025-01-03",
+    "updated_at": "2025-02-03"
+  },
+  {
+    "id": "human_jlennon",
+    "name": "John Lennon",
+    "department": "Innovation & Strategy",
+    "region": "UK / EMEA",
+    "skills": [
+      "Creative AI",
+      "Generative Models",
+      "Prompt Artistry",
+      "Vision AI"
+    ],
+    "ai_services": [
+      "prd-copilot",
+      "feature-impact",
+      "campaign-writer",
+      "experiment-planner"
+    ],
+    "sme_level": "⭐⭐⭐⭐ Expert",
+    "created_at": "2024-05-01",
+    "updated_at": "2025-02-10"
+  },
+  {
+    "id": "human_pmccartney",
+    "name": "Paul McCartney",
+    "department": "Customer Experience & Solutions",
+    "region": "UK / EMEA",
+    "skills": [
+      "Voice AI",
+      "Multimodal ML",
+      "Human-AI Interaction"
+    ],
+    "ai_services": [
+      "support-copilot",
+      "ticket-triage",
+      "escalation-predictor",
+      "incident-summarizer"
+    ],
+    "sme_level": "⭐⭐⭐⭐⭐ Principal",
+    "created_at": "2024-04-12",
+    "updated_at": "2025-02-08"
+  },
+  {
+    "id": "human_gharrison",
+    "name": "George Harrison",
+    "department": "Engineering & Automation",
+    "region": "APAC",
+    "skills": [
+      "Workflow Automation",
+      "Agent Orchestration",
+      "Calm Design"
+    ],
+    "ai_services": [
+      "openstack-validator",
+      "capacity-forecast",
+      "drift-detector",
+      "sre-playbooks"
+    ],
+    "sme_level": "⭐⭐⭐ Skilled",
+    "created_at": "2024-03-05",
+    "updated_at": "2025-01-15"
+  },
+  {
+    "id": "human_rstarr",
+    "name": "Ringo Starr",
+    "department": "Support & Operations",
+    "region": "AMER",
+    "skills": [
+      "Reliability Engineering",
+      "Monitoring AI",
+      "LLM Guardrails"
+    ],
+    "ai_services": [
+      "alert-dedup",
+      "incident-summarizer",
+      "sla-monitor",
+      "routing-optimizer"
+    ],
+    "sme_level": "⭐⭐ Advanced Beginner",
+    "created_at": "2024-02-10",
+    "updated_at": "2024-12-20"
+  },
+  {
+    "id": "human_ylecun",
+    "name": "Yann LeCun",
+    "department": "Meta AI",
+    "region": "North America",
+    "skills": [
+      "Self-Supervised Learning",
+      "Deep Learning",
+      "Autonomy"
+    ],
+    "ai_services": [
+      "feature-store",
+      "model-monitor",
+      "prompt-library",
+      "rag-builder"
+    ],
+    "sme_level": "⭐⭐⭐⭐⭐ Principal",
+    "created_at": "2024-01-01",
+    "updated_at": "2025-02-02"
+  },
+  {
+    "id": "human_dhassabis",
+    "name": "Demis Hassabis",
+    "department": "Google DeepMind",
+    "region": "UK / Europe",
+    "skills": [
+      "AGI",
+      "Reinforcement Learning",
+      "Model Alignment"
+    ],
+    "ai_services": [
+      "scenario-simulator",
+      "risk-radar",
+      "kpi-briefs",
+      "rag-builder"
+    ],
+    "sme_level": "⭐⭐⭐⭐⭐ Principal",
+    "created_at": "2024-01-05",
+    "updated_at": "2025-02-03"
+  },
+  {
+    "id": "human_emusk",
+    "name": "Elon Musk",
+    "department": "Tesla / SpaceX / xAI",
+    "region": "Global",
+    "skills": [
+      "AI Safety",
+      "Robotics",
+      "Simulation",
+      "Autonomy"
+    ],
+    "ai_services": [
+      "sre-playbooks",
+      "scenario-simulator",
+      "policy-checker",
+      "capacity-forecast"
+    ],
+    "sme_level": "⭐⭐⭐⭐ Expert",
+    "created_at": "2024-05-20",
+    "updated_at": "2025-01-02"
+  }
+]

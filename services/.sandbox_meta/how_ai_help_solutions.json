@@ -1,0 +1,108 @@
+[
+  {
+    "id": "solution_1764549689",
+    "challenge": "custom billing",
+    "author": "mr Billing ",
+    "helper": "mr Billing ",
+    "submitter": "Gerry ",
+    "approach": "• What: format conversion / automated billing",
+    "difficulty": "Easy",
+    "what_features": "format conversion / automated billing ",
+    "how_components": "",
+    "ai_tools_used": "",
+    "so_what_benefits": "",
+    "upvotes": 0,
+    "comments": 0,
+    "status": "Draft",
+    "created_at": "2025-12-01T07:41:29.291469"
+  },
+  {
+    "id": "solution_1764415095",
+    "challenge": "a talent directory with projet portfolio ",
+    "author": "Ben ",
+    "approach": "• What: YES AI a community driven LAB where problems  and painpoint finds solutions and Cure !\n• How: team of multitalent experts , poc , agent library\n• AI tools: opensource  model , regression , random forest",
+    "difficulty": "Hard",
+    "what_features": "YES AI a community driven LAB where problems  and painpoint finds solutions and Cure ! ",
+    "how_components": "team of multitalent experts , poc , agent library",
+    "ai_tools_used": "opensource  model , regression , random forest ",
+    "so_what_benefits": "",
+    "upvotes": 0,
+    "comments": 0,
+    "status": "Draft",
+    "created_at": "2025-11-29T18:18:15.293461",
+    "helper": "Dzoan",
+    "submitter": "Ben "
+  },
+  {
+    "id": "solution_1764371607",
+    "challenge": "a talent repo with project portfolio",
+    "author": "dzoan nguyen tran",
+    "approach": "• What: kaggle like challenge / team searchable dir / proposed soltion / pco mvp / into prod pipeline",
+    "difficulty": "Easy",
+    "what_features": "kaggle like challenge / team searchable dir / proposed soltion / pco mvp / into prod pipeline",
+    "how_components": "",
+    "ai_tools_used": "",
+    "so_what_benefits": "",
+    "upvotes": 0,
+    "comments": 0,
+    "status": "Draft",
+    "created_at": "2025-11-29T06:13:27.415387"
+  },
+  {
+    "id": "solution_1764301127",
+    "challenge": "a talent repo with project portfolio",
+    "challenge_id": "challenge_1764275415",
+    "author": "dzoan nguyen tran",
+    "approach": "Title: test\nChallenge Chosen: test\nProposed Solution (WHAT): \nAI Tools / Technologies: LLM (Gemma, GPT, Mistral)\nBusiness Benefits: Efficiency=, Cost=, Risk=, UX=\nArchitecture Summary: Dashboard, Ingestion, Mapping Engine, Parser\nSkill Partners Needed: \nTimeline: 4-6 weeks\nRisks & Mitigations: TBD\nDifficulty: Easy",
+    "difficulty": "Hard",
+    "what_features": "🧱 WHAT — The Platform\nYES AI CAN is an internal AI innovation ecosystem that provides:\n1. Human Stack Directory\nA searchable directory of Rackers with:\nSkills\nRoles\nExperience\nAI expertise\nProjects built\nResume upload\nEnabling true “who knows what” visibility.\n2. Project Hub\nA structured place to publish:\nProject idea\nAuthor\nDepartment\nPain point\nBusiness value\nStatus (Incubation → MVP → Ready)\nDemo links, repos, documentation\nComments, feedback, and ratings from peers\n3. Global AI Agent Library (Customer ZERO)\nReusable, production-ready AI agents organized by:\nIndustry\nFunction\nAuthor\nVersion\nPurpose\nStatus\nUser ratings + comments\nThis library becomes the Customer 1 starting point for our OpenStack and private-AI customers.\n4. “How Can AI Help?” Challenge Feed\nA Kaggle-style section where Rackers can submit:\nPain points\nRepetitive workflows\nInefficiencies\nWish-list features\nDesired outcomes\nThe community can propose solutions, submit ideas, join teams, and convert challenges into real projects.\n5. Zero-Code AI Agent Builder\nA guided canvas that lets any Racker (technical or not) build:\nCredit appraisal agents\nKYC workflows\nAsset valuation agents\nIT troubleshooting agents\nForecasting engines\nOCR extractors\nAnd more…\nAll transparent, explainable, and deployable on OpenStack or FAIR in minutes.",
+    "ai_tools_used": "['LLM (Gemma, GPT, Mistral)', 'RAG / Vector DB (FAISS, Chroma, LanceDB)', 'Streamlit or Dash UI', 'FastAPI Backend']",
+    "so_what": {
+      "efficiency": "⚡ SO WHAT — The Impact\nYES AI CAN becomes a multiplier for Rackspace:\nAccelerates AI fluency across the entire company\nDemocratizes innovation — anyone can build or contribute\nSurfaces hidden talent across regions, teams, and roles\nCreates a live inventory of internal solutions for REX 2.0\nReduces duplication by enabling reuse of existing agents\nTransforms Customer ZERO into Customer ONE for OpenStack AI offerings\nMinimizes CapEx for experimentation — fast, frictionless learning\nMotivates Ambassadors and SMEs with visibility and impact\nMost importantly:\nIt gives every Racker the confidence and tools to say “Yes, AI can make my work better.”",
+      "cost": "",
+      "risk": "",
+      "ux": "👥 FOR WHO — The Beneficiaries\nRackers with ideas or curiosity\nAmbassadors seeking challenges and visibility\nSMEs offering expertise\nSupport / Finance / Sales Ops / DC Engineering with real pain points\nManagers looking for automation\nAI teams who need reusable patterns\nCustomers who will adopt our internal agents as turnkey blocks\nYES AI CAN serves every department, region, and role.\n🌍 WHERE — The Ecosystem\nYES AI CAN runs on:\nInternal WSL / Windows machines\nOpenStack private cloud\nFAIR AI infrastructure\nLocal dev laptops\nDocker Compose\nBrowser-based zero-install interfaces\nFrom laptop → lab → production without friction.\n🧠 HOW — The Mechanism\nThe system ties together:\nHuman Stack Directory\nProject Hub\nChallenge submission\nAI agent templates\nShared libraries\nRatings + comments\nA unified navigation center\nOntology and patterns layer (future)\nEvery project follows a consistent Why / What / For Who / So What / Status format so ideas become reusable assets.\nAgents are logged, versioned, rated, and deployed with transparency, explainability, and human oversight — following the same A→F workflow we built (Intake → Privacy → Valuation → Policy → Review → Report)."
+    },
+    "components": [
+      {
+        "Component": "Ingestion",
+        "Type": "Service",
+        "Description": "Pull customer billing formats",
+        "Example": "S3 / PDF upload"
+      },
+      {
+        "Component": "Parser",
+        "Type": "AI",
+        "Description": "Convert files → structured table",
+        "Example": "LLM + Regex"
+      },
+      {
+        "Component": "Mapping Engine",
+        "Type": "Logic",
+        "Description": "Align schema",
+        "Example": "Python rules"
+      },
+      {
+        "Component": "Dashboard",
+        "Type": "UI",
+        "Description": "Show reconciliation output",
+        "Example": "Streamlit app"
+      }
+    ],
+    "tags": [
+      "WHAT",
+      "The",
+      "Platform",
+      "YES",
+      "AI",
+      "CAN",
+      "Human",
+      "Stack"
+    ],
+    "status": "Draft",
+    "created_at": "2025-11-28T10:38:47.746348",
+    "helper": "dzoan nguyen tran",
+    "so_what_benefits": "",
+    "submitter": "dzoan nguyen tran"
+  }
+]

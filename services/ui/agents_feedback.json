@@ -1,0 +1,156 @@
+{
+  "💳 Credit Appraisal Agent": {
+    "version": "1.4",
+    "rating": 4.95,
+    "users": 16,
+    "comments": [
+      "Praise: Extremely accurate loan approval explanations!",
+      "Feature Request: Please add multi-currency support for ASEAN banks.",
+      "Bug Report: Sometimes misreads employment_length column from CSV.",
+      "Feature Request: Allow retraining with anonymized data directly.",
+      "dgvSDgsdgs",
+      "awesome",
+      "great doan",
+      "Nice !"
+    ]
+  },
+  "🏦 Asset Appraisal Agent": {
+    "version": "1.1",
+    "rating": 4.85,
+    "users": 15,
+    "comments": [
+      "Feature Request: Add API link to local land registry for collateral validation.",
+      "Praise: Works fast with property market data.",
+      "Feature Request: Add auto-sync with credit appraisal model outputs.",
+      "vdsfvSDvxsbxv",
+      "retetett",
+      "retetett",
+      "doan",
+      "great workflow , suggest a basci view mode and advanced view mode for expert users - Dzoan",
+      "great maps -B",
+      "great template"
+    ]
+  },
+  "🩺 Claims Triage Agent": {
+    "version": "1.0",
+    "rating": 4.2,
+    "users": 5,
+    "comments": [
+      "Feature Request: Add fraud detection scoring.",
+      "Praise: Great for automating simple health insurance claims."
+    ]
+  },
+  "📈 Sales Forecast Agent": {
+    "version": "1.0",
+    "rating": 4.6,
+    "users": 7,
+    "comments": [
+      "Feature Request: Allow seasonal trend adjustment.",
+      "Praise: Helps predict campaign impact precisely."
+    ]
+  },
+  "🔋 EV Battery Health Agent": {
+    "version": "1.0",
+    "rating": 4.4,
+    "users": 4,
+    "comments": [
+      "Feature Request: Include temperature impact metrics.",
+      "Praise: Nice visualization of degradation rate."
+    ]
+  },
+  "🔐 SecOps Log Triage": {
+    "version": "1.0",
+    "rating": 4.3,
+    "users": 6,
+    "comments": [
+      "Feature Request: Add live alert correlation between firewall and SIEM logs.",
+      "Praise: Helps reduce alert fatigue!"
+    ]
+  },
+  "⚖️ Contract Analyzer": {
+    "version": "1.0",
+    "rating": 4.7,
+    "users": 9,
+    "comments": [
+      "Feature Request: Vietnamese language clause parsing.",
+      "Praise: Excellent clause extraction accuracy.",
+      "Bug Report: Occasionally misses indemnity clause in nested documents."
+    ]
+  },
+  "🛡️ Anti-Fraud & KYC Agent": {
+    "rating": 4.69,
+    "users": 10,
+    "comments": [
+      "rgedgders",
+      "rgedgders",
+      "rgedgders",
+      "rgedgders",
+      "rgedgders",
+      "rgedgders",
+      "test",
+      "wip . test .dzoan",
+      "to be tested fully",
+      "to be tested fully"
+    ]
+  },
+  "💳 Credit Score Agent": {
+    "rating": 5.0,
+    "users": 2,
+    "comments": [
+      "nice !",
+      "nice"
+    ]
+  },
+  "⚖️ Legal Compliance Agent": {
+    "rating": 5,
+    "users": 0,
+    "comments": []
+  },
+  "🧩 Unified Risk Orchestration Agent": {
+    "rating": 5.0,
+    "users": 2,
+    "comments": [
+      "nice !",
+      "nice !"
+    ]
+  },
+  "💬 Chatbot Assistant": {
+    "rating": 5.0,
+    "users": 1,
+    "comments": [
+      "need to be tested with real gpu env"
+    ]
+  },
+  "🏠 Real Estate Evaluator Agent": {
+    "rating": 5.0,
+    "users": 4,
+    "comments": [
+      "great map , add web data scrpaigin for all countries please - Dzoan",
+      "hello test",
+      "wow, this work for vietnam only ?",
+      "this can work world wide ? awesome !"
+    ]
+  },
+  "🧠 IT Troubleshooter Agent": {
+    "rating": 5.0,
+    "users": 1,
+    "comments": [
+      "to be test fully"
+    ]
+  },
+  "🧑‍🚀 Persona Strategy Room": {
+    "rating": 5.0,
+    "users": 1,
+    "comments": [
+      "wip"
+    ]
+  },
+  "⚖️ Legal & Compliance Agent": {
+    "rating": 5.0,
+    "users": 2,
+    "comments": [
+      "nice",
+      "bug fixed ! its working ! good job !"
+    ]
+  }
+}

@@ -1,0 +1,117 @@
+[
+  {
+    "id": "challenge_1764549627",
+    "title": "custom billing",
+    "description": "create a  system that can customize our billing format and timeline to customers own format and timeline ",
+    "product_features": "Custom billing format conversion  and billing timeline delivery ",
+    "submitter": {
+      "name": "Gerry ",
+      "department": "accounting",
+      "region": "world",
+      "role": "billing"
+    },
+    "attachments": [],
+    "category": "Billing",
+    "difficulty": "Hard",
+    "impact_level": "High",
+    "task_type": [],
+    "tags": [],
+    "skills_needed": [
+      "Billing",
+      "Hard"
+    ],
+    "confidentiality": "Public",
+    "team_size": 3,
+    "upvotes": 0,
+    "comments": 0,
+    "urgency": 6.0,
+    "impact_score": 6.5,
+    "similar_agents": [],
+    "similar_rackers": [],
+    "similar_projects": [],
+    "created_at": "2025-12-01T07:40:27.598623",
+    "ai_baseline": {
+      "summary": "Baseline AI plan for custom billing",
+      "category": "Billing",
+      "workflow": [
+        "Intake & classify problem statement",
+        "Assess available data + access controls",
+        "Draft automation / agent blueprint",
+        "Human validation and policy checks",
+        "Deploy pilot, monitor telemetry"
+      ],
+      "required_data": [
+        "ERP exports",
+        "Invoice CSV",
+        "Ledger snapshots"
+      ],
+      "risks": [
+        "Data quality",
+        "Access controls",
+        "Change management"
+      ],
+      "similar_agents": [
+        "Credit Appraisal Agent",
+        "IT Troubleshooter"
+      ],
+      "complexity": "High",
+      "timeline": "6-8 weeks",
+      "why_ai": "AI can eliminate repetitive toil and surface insights faster than manual processes."
+    }
+  },
+  {
+    "id": "challenge_1764275415",
+    "title": "a talent directory with projet portfolio ",
+    "description": "Hello Rackers - As we look at accelerating the velocity of AI Fluency and excellence its become clear to me is that we have amazing superpowers distributed globally across our 5000+ Rackers. The question is how do we \"mine\" those superpowers. It would be wonderful if we had 1)  a repository of who knows what (who are our domain SMEs), 2)  what AI solutions have been built either internally or for customer in a way that might be by our new Rex 2.0 engine to assess how we could reuse solution patterns and agents that have built - Any creative thoughts on how to do this simply and at scale? - what data would we want to capture, how do get that data, how do we maintain and keep the repository current? Need some help here.",
+    "submitter": {
+      "name": "Ben",
+      "department": "Cx",
+      "region": "world",
+      "role": "CTO VP AI "
+    },
+    "attachments": [],
+    "category": "Support",
+    "difficulty": "Critical",
+    "impact_level": "High",
+    "task_type": [
+      "Governance",
+      "Workflow"
+    ],
+    "tags": [],
+    "confidentiality": "Public",
+    "team_size": 3,
+    "upvotes": 0,
+    "comments": 0,
+    "urgency": 6.0,
+    "impact_score": 6.5,
+    "similar_agents": [],
+    "created_at": "2025-11-28T03:30:15.938196",
+    "ai_baseline": {
+      "summary": "Baseline AI plan for test",
+      "category": "Support",
+      "workflow": [
+        "Intake & classify problem statement",
+        "Assess available data + access controls",
+        "Draft automation / agent blueprint",
+        "Human validation and policy checks",
+        "Deploy pilot, monitor telemetry"
+      ],
+      "required_data": [
+        "Team-provided sample data"
+      ],
+      "risks": [
+        "Data quality",
+        "Access controls",
+        "Change management"
+      ],
+      "similar_agents": [
+        "Credit Appraisal Agent",
+        "IT Troubleshooter"
+      ],
+      "complexity": "High",
+      "timeline": "6-8 weeks",
+      "why_ai": "AI can eliminate repetitive toil and surface insights faster than manual processes."
+    },
+    "product_features": ""
+  }
+]
