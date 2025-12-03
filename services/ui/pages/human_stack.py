@@ -257,37 +257,17 @@ AI_SERVICE_CATALOG: List[Dict[str, Any]] = [
 
 def load_humans() -> List[Dict]:
     """
-    Robustly load humans.json from the project root data directory.
+    Load humans.json from the meta store (.sandbox_meta directory).
+    This uses the centralized meta_store utility for consistent file access.
     """
-    # 1. Calculate paths based on the location of THIS script file
-    # If script is in: services/ui/page/human_stack.py
-    # .parents[0] = page
-    # .parents[1] = ui
-    # .parents[2] = services
-    # .parents[3] = project_root
-    current_file = Path(__file__).resolve()
-    project_root = current_file.parents[3] 
-    
-    # Check multiple likely locations for the data file
-    possible_paths = [
-        project_root / "data" / "humans.json",    # Standard structure
-        Path("data/humans.json")                  # If running from root and file is in data/
-    ]
-
-    for path in possible_paths:
-        if path.exists():
-            try:
-                with open(path, "r", encoding="utf-8") as f:
-                    data = json.load(f)
-                    # print(f"DEBUG: Successfully loaded {len(data)} profiles from {path}")
-                    return data
-            except Exception as e:
-                st.error(f"Found file at {path} but failed to load: {e}")
-                return []
-    
-    # Fallback if nothing found
-    st.warning(f"Could not find humans.json. Checked: {[str(p) for p in possible_paths]}")
-    return []
+    try:
+        data = load_json("humans.json", [])
+        if not isinstance(data, list):
+            return []
+        return data
+    except Exception as e:
+        st.error(f"Failed to load humans.json: {e}")
+        return []
 
 # def load_humans() -> List[Dict]:
 #     base_records = load_json("humans.json", [])
@@ -318,27 +298,13 @@ def load_humans() -> List[Dict]:
 #     return combined
 
 
-# def save_humans(humans: List[Dict]):
-#     save_json("humans.json", humans)
 def save_humans(humans: List[Dict]):
     """
-    Save humans list to the correct data/humans.json path.
+    Save humans list to the meta store (.sandbox_meta directory).
+    This uses the centralized meta_store utility for consistent file access.
     """
-    # 1. Determine the path relative to this script
-    current_file = Path(__file__).resolve()
-    project_root = current_file.parents[3] # Adjusts based on services/ui/page structure
-    
-    # Target the specific file in the data folder
-    target_path = project_root / "data" / "humans.json"
-    
-    # 2. Ensure the directory exists
-    target_path.parent.mkdir(parents=True, exist_ok=True)
-    
-    # 3. Write to file
     try:
-        with open(target_path, "w", encoding="utf-8") as f:
-            json.dump(humans, f, indent=2, ensure_ascii=False)
-        # print(f"DEBUG: Saved {len(humans)} profiles to {target_path}")
+        save_json("humans.json", humans)
     except Exception as e:
         st.error(f"Failed to save profile: {e}")
 

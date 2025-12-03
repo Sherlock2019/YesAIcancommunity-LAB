@@ -29,7 +29,7 @@ class HumanStack:
         base_path = (
             Path(path)
             if path is not None
-            else Path(__file__).resolve().parents[1] / "data" / "humans.json"
+            else Path(__file__).resolve().parent / ".sandbox_meta" / "humans.json"
         )
         self.path = base_path
         self.path.parent.mkdir(parents=True, exist_ok=True)
