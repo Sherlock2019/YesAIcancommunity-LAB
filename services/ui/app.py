@@ -22,6 +22,9 @@ from services.ui.theme_manager import get_theme, set_theme
 from typing import Dict, List, Any
 
 
+
+
+
 os.environ.setdefault("STREAMLIT_TELEMETRY_DISABLED", "true")
 os.environ.setdefault("STREAMLIT_BROWSER_GATHER_USAGE_STATS", "false")
 
@@ -66,6 +69,170 @@ def _load_title_image_data() -> tuple[str, str]:
 
 TITLE_IMAGE_BASE64, TITLE_IMAGE_MIME_TYPE = _load_title_image_data()
 
+# ============================================
+# 🔧 GLOBAL RESPONSIVE CSS + FULL-SCREEN FIXES
+# ============================================
+st.markdown("""
+<style>
+
+html, body, .block-container {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+}
+
+/* Remove Streamlit padding */
+.block-container {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}
+
+/* Ensure hero + sections expand properly */
+section, div, main {
+    max-width: 100% !important;
+}
+
+/* =========================
+     RESPONSIVE TYPOGRAPHY
+========================= */
+html, body, [class*="st-"] {
+    font-size: 18px !important;
+}
+
+/* Tablet */
+@media (max-width: 1024px) {
+    html, body, [class*="st-"] { font-size: 16px !important; }
+    h1 { font-size: 28px !important; }
+    h2 { font-size: 22px !important; }
+    h3 { font-size: 18px !important; }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+    html, body, [class*="st-"] { font-size: 14px !important; }
+    h1 { font-size: 22px !important; }
+    h2 { font-size: 18px !important; }
+    h3 { font-size: 16px !important; }
+}
+
+/* =========================
+      RESPONSIVE TABLES
+========================= */
+table {
+    width: 100% !important;
+    display: block !important;
+    overflow-x: auto !important;
+    white-space: nowrap !important;
+}
+
+/* =========================
+   2-COLUMN → 1-COLUMN CARDS
+========================= */
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 22px;
+}
+
+@media (max-width: 900px) {
+    .card-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+/* =========================
+   RESPONSIVE CHARTS & GRAPHS
+========================= */
+/* Streamlit charts */
+[data-testid="stVegaLiteChart"],
+[data-testid="stPlotlyChart"],
+[data-testid="stArrowVegaLiteChart"] {
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+/* Chart containers */
+.stPlotlyChart, .stVegaLiteChart {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+}
+
+/* Plotly responsive */
+.js-plotly-plot .plotly {
+    width: 100% !important;
+    height: auto !important;
+}
+
+/* Chart legends on mobile */
+@media (max-width: 600px) {
+    .js-plotly-plot .legend {
+        font-size: 10px !important;
+    }
+}
+
+/* =========================
+   RESPONSIVE DATAFRAMES
+========================= */
+[data-testid="stDataFrame"] {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+}
+
+.dataframe {
+    font-size: 14px !important;
+}
+
+@media (max-width: 600px) {
+    .dataframe {
+        font-size: 11px !important;
+    }
+    .dataframe th, .dataframe td {
+        padding: 4px 6px !important;
+    }
+}
+
+/* =========================
+   RESPONSIVE BUTTONS
+========================= */
+.stButton > button {
+    transition: all 0.3s ease !important;
+}
+
+@media (max-width: 600px) {
+    .stButton > button {
+        font-size: 14px !important;
+        padding: 8px 16px !important;
+    }
+}
+
+/* =========================
+   RESPONSIVE COLUMNS
+========================= */
+[data-testid="column"] {
+    transition: all 0.3s ease !important;
+}
+
+/* =========================
+   SMOOTH TRANSITIONS
+========================= */
+* {
+    transition-property: width, max-width, padding, margin, font-size !important;
+    transition-duration: 0.3s !important;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Preserve instant transitions for interactive elements */
+button, a, input, select, textarea {
+    transition-duration: 0.15s !important;
+}
+
+</style>
+""", unsafe_allow_html=True)
+
 # Sync yes_theme with the shared theme manager so all toggles stay aligned
 shared_theme = get_theme()
 st.session_state["yes_theme"] = st.session_state.get("yes_theme", shared_theme)
@@ -79,6 +246,293 @@ if st.session_state.get("theme_toggle") != desired_toggle_state:
 if "theme_toggle" in st.session_state:
     st.session_state["yes_theme"] = "dark" if st.session_state["theme_toggle"] else "light"
 auth_user = st.session_state.get("auth_user")
+
+# ==============================
+# 📱 DEVICE VIEW OPTIONS (Beautiful & Small)
+# ==============================
+
+# Get current theme for styling
+current_theme = st.session_state.get("yes_theme", "dark")
+is_dark = current_theme == "dark"
+
+# Create a small, beautiful dropdown in top-right corner
+col1, col2 = st.columns([5, 1])
+with col2:
+    view_mode = st.selectbox(
+        "Device View Options",
+        [
+            "Desktop Full",
+            "Desktop 1440px",
+            "iPad Pro (1024px)",
+            "iPad (820px)",
+            "iPhone Pro Max (430px)",
+            "iPhone (390px)",
+            "Galaxy S22 (412px)"
+        ],
+        index=0,
+        key="device_view_selector"
+    )
+
+# Style the dropdown to be beautiful and small
+st.markdown(f"""
+<style>
+/* Position and style the dropdown container */
+div[data-testid="column"]:has(div[data-baseweb="select"]) {{
+    position: fixed !important;
+    top: 15px !important;
+    right: 15px !important;
+    z-index: 10000 !important;
+    width: 220px !important;
+}}
+
+/* Style the label - BIGGER NEON BLUE */
+div[data-testid="column"]:has(div[data-baseweb="select"]) label,
+label[data-testid="stSelectboxLabel"],
+div[data-baseweb="select"] ~ label,
+.stSelectbox label {{
+    font-size: 18px !important;
+    font-weight: 900 !important;
+    color: #00d4ff !important;
+    text-shadow:
+        0 0 10px rgba(0, 212, 255, 1),
+        0 0 20px rgba(0, 212, 255, 0.8),
+        0 0 30px rgba(0, 212, 255, 0.6),
+        0 0 40px rgba(0, 212, 255, 0.4) !important;
+    margin-bottom: 8px !important;
+    letter-spacing: 1.5px !important;
+    text-transform: uppercase !important;
+    display: block !important;
+    padding-bottom: 4px !important;
+}}
+
+/* Style the dropdown box - BLACK BACKGROUND */
+div[data-baseweb="select"] {{
+    background: #000000 !important;
+    background-color: #000000 !important;
+    border: 2px solid rgba(0, 212, 255, 0.6) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 212, 255, 0.4) !important;
+    backdrop-filter: blur(10px) !important;
+    transition: all 0.3s ease !important;
+}}
+
+div[data-baseweb="select"]:hover {{
+    border-color: rgba(0, 212, 255, 0.9) !important;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.9), 0 0 30px rgba(0, 212, 255, 0.6) !important;
+}}
+
+/* Style the selected value - NEON BLUE TEXT */
+div[data-baseweb="select"] > div,
+div[data-baseweb="select"] > div > div,
+div[data-baseweb="select"] span,
+div[data-baseweb="select"] p {{
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    color: #00d4ff !important;
+    padding: 6px 12px !important;
+    background: transparent !important;
+}}
+
+/* Style the dropdown arrow - NEON BLUE */
+div[data-baseweb="select"] svg,
+div[data-baseweb="select"] svg path {{
+    fill: #00d4ff !important;
+    color: #00d4ff !important;
+}}
+
+/* Style the dropdown menu - BLACK */
+ul[role="listbox"] {{
+    background: #000000 !important;
+    background-color: #000000 !important;
+    border: 2px solid rgba(0, 212, 255, 0.6) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.9), 0 0 30px rgba(0, 212, 255, 0.5) !important;
+    backdrop-filter: blur(10px) !important;
+    padding: 6px !important;
+}}
+
+/* Style dropdown options - NEON BLUE TEXT */
+li[role="option"],
+li[role="option"] span,
+li[role="option"] div {{
+    font-size: 13px !important;
+    padding: 8px 12px !important;
+    border-radius: 8px !important;
+    color: #00d4ff !important;
+    background: transparent !important;
+    transition: all 0.2s ease !important;
+}}
+
+li[role="option"]:hover {{
+    background: rgba(0, 212, 255, 0.2) !important;
+    color: #00d4ff !important;
+    box-shadow: 0 0 10px rgba(0, 212, 255, 0.5) !important;
+}}
+
+li[role="option"][aria-selected="true"],
+li[role="option"][aria-selected="true"] span,
+li[role="option"][aria-selected="true"] div {{
+    background: rgba(0, 212, 255, 0.3) !important;
+    color: #00d4ff !important;
+    font-weight: 700 !important;
+    box-shadow: 0 0 15px rgba(0, 212, 255, 0.7) !important;
+    text-shadow: 0 0 5px rgba(0, 212, 255, 0.8) !important;
+}}
+</style>
+
+<script>
+// Force apply neon blue styling to label
+setTimeout(function() {{
+    // Find all labels in the dropdown column
+    const labels = document.querySelectorAll('div[data-testid="column"] label, label[data-testid="stSelectboxLabel"]');
+    labels.forEach(label => {{
+        if (label.textContent.includes('Device View Options')) {{
+            label.style.fontSize = '18px';
+            label.style.fontWeight = '900';
+            label.style.color = '#00d4ff';
+            label.style.textShadow = '0 0 10px rgba(0, 212, 255, 1), 0 0 20px rgba(0, 212, 255, 0.8), 0 0 30px rgba(0, 212, 255, 0.6), 0 0 40px rgba(0, 212, 255, 0.4)';
+            label.style.letterSpacing = '1.5px';
+            label.style.textTransform = 'uppercase';
+            label.style.marginBottom = '8px';
+            label.style.display = 'block';
+        }}
+    }});
+}}, 100);
+
+// AGGRESSIVE: Force black background continuously
+function forceBlackBackground() {{
+    // Target ALL possible dropdown containers
+    const selectors = [
+        'div[data-baseweb="select"]',
+        '[role="button"][aria-haspopup="listbox"]',
+        '.stSelectbox div[data-baseweb="select"]',
+        'div[data-testid="stSelectbox"] div[data-baseweb="select"]'
+    ];
+
+    selectors.forEach(selector => {{
+        const elements = document.querySelectorAll(selector);
+        elements.forEach(el => {{
+            // Force black on the element itself
+            el.style.setProperty('background', '#000000', 'important');
+            el.style.setProperty('background-color', '#000000', 'important');
+            el.style.setProperty('border', '2px solid rgba(0, 212, 255, 0.6)', 'important');
+
+            // Force black on all child divs
+            const allDivs = el.querySelectorAll('div');
+            allDivs.forEach(div => {{
+                div.style.setProperty('background', '#000000', 'important');
+                div.style.setProperty('background-color', '#000000', 'important');
+            }});
+
+            // Force neon blue text on all text elements
+            const textElements = el.querySelectorAll('div, span, p');
+            textElements.forEach(text => {{
+                text.style.setProperty('color', '#00d4ff', 'important');
+            }});
+
+            // Force neon blue arrow
+            const svgs = el.querySelectorAll('svg, svg path');
+            svgs.forEach(svg => {{
+                svg.style.setProperty('fill', '#00d4ff', 'important');
+            }});
+        }});
+    }});
+
+    // Force black on dropdown menu
+    const menus = document.querySelectorAll('ul[role="listbox"]');
+    menus.forEach(menu => {{
+        menu.style.setProperty('background', '#000000', 'important');
+        menu.style.setProperty('background-color', '#000000', 'important');
+        menu.style.setProperty('border', '2px solid rgba(0, 212, 255, 0.6)', 'important');
+
+        const options = menu.querySelectorAll('li[role="option"]');
+        options.forEach(option => {{
+            option.style.setProperty('color', '#00d4ff', 'important');
+            option.style.setProperty('background', 'transparent', 'important');
+        }});
+    }});
+
+    // Style label
+    const labels = document.querySelectorAll('div[data-testid="column"] label, label[data-testid="stSelectboxLabel"]');
+    labels.forEach(label => {{
+        if (label.textContent.includes('Device View Options')) {{
+            label.style.fontSize = '18px';
+            label.style.fontWeight = '900';
+            label.style.color = '#00d4ff';
+            label.style.textShadow = '0 0 10px rgba(0, 212, 255, 1), 0 0 20px rgba(0, 212, 255, 0.8), 0 0 30px rgba(0, 212, 255, 0.6), 0 0 40px rgba(0, 212, 255, 0.4)';
+            label.style.letterSpacing = '1.5px';
+            label.style.textTransform = 'uppercase';
+        }}
+    }});
+}}
+
+// Apply continuously every 100ms to override Streamlit
+setInterval(forceBlackBackground, 100);
+
+// Also apply on events
+setTimeout(forceBlackBackground, 50);
+setTimeout(forceBlackBackground, 200);
+setTimeout(forceBlackBackground, 500);
+setTimeout(forceBlackBackground, 1000);
+
+// Re-apply on mutations
+const observer = new MutationObserver(forceBlackBackground);
+observer.observe(document.body, {{ childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] }});
+
+// Re-apply on clicks
+document.addEventListener('click', forceBlackBackground);
+document.addEventListener('focus', forceBlackBackground, true);
+</script>
+""", unsafe_allow_html=True)
+
+# =====================================
+# 📐 APPLY VIEWPORT BASED ON SELECTION
+# =====================================
+
+# Map device names to viewport widths and container widths
+device_config = {
+    "Desktop Full": {"viewport": "device-width", "width": "100%", "max_width": "100%"},
+    "Desktop 1440px": {"viewport": "1440", "width": "1440px", "max_width": "1440px"},
+    "iPad Pro (1024px)": {"viewport": "1024", "width": "1024px", "max_width": "1024px"},
+    "iPad (820px)": {"viewport": "820", "width": "820px", "max_width": "820px"},
+    "iPhone Pro Max (430px)": {"viewport": "430", "width": "430px", "max_width": "430px"},
+    "iPhone (390px)": {"viewport": "390", "width": "390px", "max_width": "390px"},
+    "Galaxy S22 (412px)": {"viewport": "412", "width": "412px", "max_width": "412px"}
+}
+
+# Get config for selected device
+config = device_config.get(view_mode, device_config["Desktop Full"])
+
+# Apply viewport meta tag
+st.markdown(f'<meta name="viewport" content="width={config["viewport"]}, initial-scale=1">', unsafe_allow_html=True)
+
+# Apply width styling
+st.markdown(f"""
+<style>
+.block-container {{
+    padding-top: 4rem !important;
+    padding-bottom: 1rem !important;
+    max-width: {config['max_width']} !important;
+    width: {config['width']} !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}}
+
+/* Ensure main container respects width */
+.main {{
+    max-width: 100% !important;
+}}
+
+/* Smooth transitions for all elements */
+* {{
+    transition-property: width, max-width, padding, margin !important;
+    transition-duration: 0.3s !important;
+    transition-timing-function: ease !important;
+}}
+</style>
+""", unsafe_allow_html=True)
+
 
 # Hide Streamlit sidebar
 st.markdown("""
@@ -654,68 +1108,25 @@ def render_theme_styles():
 # Call the theme renderer (keep this line outside the function definition)
 render_theme_styles()
 
-# --- Full-Width Title Image ---
-st.markdown("""
-<style>
-.fullwidth-title-wrap {
-    position: relative;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    padding-top: 16px;
-    margin: 0 auto 10px;
-}
+# ============================================
+# 🔧 HERO WRAPPER (Full-Responsive Hero Image)
+# ============================================
 
-.fullwidth-title {
-    width: clamp(270px, 30vw, 900px);
-    max-width: 1000px;
-    border-radius: 32px;
-    box-shadow:
-        0 0 25px rgba(0, 200, 255, 0.75),
-        0 0 55px rgba(255, 0, 200, 0.55);
-    display: block;
-    margin: 0 auto;
-}
+# Determine logo source
+if TITLE_IMAGE_BASE64:
+    logo_src = f"data:{TITLE_IMAGE_MIME_TYPE};base64,{TITLE_IMAGE_BASE64}"
+else:
+    # Fallback to a default image if no logo uploaded
+    logo_src = "https://via.placeholder.com/1600x400/1E88E5/FFFFFF?text=YESAICAN+LAB"
 
-</style>
+# Hero image (logo 100% bigger = 2x scale)
+st.markdown(f"""
+<div style="position: relative; width: 100%; text-align: center; margin-bottom: 2rem;">
+    <img src="{logo_src}" style="width:100%; max-width:1600px; height:auto; border-radius: 32px; box-shadow: 0 0 25px rgba(0, 200, 255, 0.75), 0 0 55px rgba(255, 0, 200, 0.55); transform: scale(2); transform-origin: center;">
+</div>
 """, unsafe_allow_html=True)
 
-st.markdown('<div class="fullwidth-title-wrap">', unsafe_allow_html=True)
-
-if TITLE_IMAGE_BASE64:
-    st.markdown(
-        f'<img src="data:{TITLE_IMAGE_MIME_TYPE};base64,{TITLE_IMAGE_BASE64}" class="fullwidth-title">',
-        unsafe_allow_html=True,
-    )
-
-st.markdown('</div>', unsafe_allow_html=True)
-
-# Title logo upload controls
-st.session_state.setdefault("show_title_logo_uploader", False)
-upload_col, upload_info_col = st.columns([1, 3])
-with upload_col:
-    if st.button("📤 Upload new title logo", key="upload_title_logo_btn"):
-        st.session_state["show_title_logo_uploader"] = True
-with upload_info_col:
-    st.caption(
-        "Update the hero image that shows above by uploading a PNG / JPG / WEBP / SVG file."
-    )
-
-if st.session_state["show_title_logo_uploader"]:
-    uploaded_title_logo = st.file_uploader(
-        "Choose a title logo image",
-        type=["png", "jpg", "jpeg", "webp", "svg"],
-        key="title_logo_upload_input",
-        help="This image replaces the hero logo across the app.",
-    )
-    if uploaded_title_logo:
-        TITLE_IMAGE_PATH.parent.mkdir(parents=True, exist_ok=True)
-        with open(TITLE_IMAGE_PATH, "wb") as handle:
-            handle.write(uploaded_title_logo.getbuffer())
-        st.success("✅ Title logo saved. Refreshing the page…")
-        st.session_state["show_title_logo_uploader"] = False
-        st.rerun()
+# Logo upload button removed to prevent reload loop
 
 # def render_theme_styles():
 #     css = DARK_CSS if st.session_state.get("yes_theme", "dark") == "dark" else LIGHT_CSS
@@ -1337,8 +1748,8 @@ def render_help_intro() -> None:
         """
         <div class="neon-table" style="margin-bottom:1.5rem;">
             <div class="neon-table-title" style="font-size:1.4rem;">
-                🔥 1- Submit your painpoints or ideas to improve your tasks 
-                    2- Find Great people and Team who will build FOR and WITH You a Solution that will put a Smile on your Face  
+                🔥 1- Submit your painpoints or ideas to improve your tasks
+                    2- Find Great people and Team who will build FOR and WITH You a Solution that will put a Smile on your Face
                     3- and if it s a great solution , We will share it in the Production Library for US and for our Customers- By putting all our ideas and talents Together , We all Build a  better Services , a Better Company Culture and Business, get More Happier Customers and Build a Better World !
             </div>
             <p style="color:rgba(226,232,240,0.9);">
@@ -3800,7 +4211,7 @@ def render_human_stack_table():
         """
         <h3 style="margin-bottom:0.5rem;">👥 Human Stack Directory</h3>
         <p style="color:#94a3b8; font-size:0.95rem; margin-bottom:1rem;">
-            Find the right people to help you be GREAT. Filter by <b>skills</b>, 
+            Find the right people to help you be GREAT. Filter by <b>skills</b>,
             <b>AI-augmented services / products</b>, or <b>department</b>, then open their profile.
         </p>
         """,

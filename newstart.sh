@@ -16,7 +16,7 @@ if [[ -z "${TMPDIR:-}" ]]; then
   fi
 fi
 TMP_ROOT="${TMPDIR}"
-APIPORT="${APIPORT:-8100}"
+APIPORT="${APIPORT:-9100}"
 UIPORT="${UIPORT:-8054}"
 OLLAMA_PORT="${OLLAMA_PORT:-11434}"
 OLLAMA_URL="${OLLAMA_URL:-http://localhost:${OLLAMA_PORT}}"
@@ -24,8 +24,8 @@ OLLAMA_URL="${OLLAMA_URL:-http://localhost:${OLLAMA_PORT}}"
 NEWSTART_SKIP_MODEL_PULL="${NEWSTART_SKIP_MODEL_PULL:-1}"
 
 # Environment knobs that can be overridden before running `newstart.sh`:
-#  * APIPORT: API server port (default 8100)
-#  * UIPORT: UI server port (default 8510)
+#  * APIPORT: API server port (default 9100)
+#  * UIPORT: UI server port (default 8054)
 #  * OLLAMA_PORT: Ollama server port (default 11434)
 #  * OLLAMA_URL: Full Ollama URL (default http://localhost:11434)
 
@@ -132,10 +132,9 @@ check_port_free() {
 
 kill_existing_processes() {
   log_info "Stopping existing sandbox processes (if any)..."
-  pkill -f "uvicorn services\.api\.main:app" 2>/dev/null || true
-  pkill -f "streamlit run app\.py" 2>/dev/null || true
-  pkill -f "streamlit run services/ui/app\.py" 2>/dev/null || true
-  pkill -f "ollama serve" 2>/dev/null || true
+  for port in "${APIPORT}" "${UIPORT}"; do
+    free_port "${port}"
+  done
   rm -f "${ROOT}/.pids/"*.pid 2>/dev/null || true
   sleep 1
 }
