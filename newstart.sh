@@ -753,6 +753,35 @@ if [[ -z "${PUBLIC_HOST}" ]]; then
   PUBLIC_HOST="localhost"
 fi
 
+# ---------- auto-open Web UI in browser when ready ----------
+open_url() {
+  local url="$1"
+  if command -v powershell.exe >/dev/null 2>&1; then
+    powershell.exe -NoProfile -Command "Start-Process '${url}'" >/dev/null 2>&1 &
+  elif command -v cmd.exe >/dev/null 2>&1; then
+    cmd.exe /C start "" "${url}" >/dev/null 2>&1 &
+  elif command -v xdg-open >/dev/null 2>&1; then
+    xdg-open "${url}" >/dev/null 2>&1 &
+  fi
+  return 0
+}
+
+if [[ "${NEWSTART_OPEN_BROWSER:-1}" == "1" ]]; then
+  (
+    ui_url="http://localhost:${UIPORT}"
+    if [[ "${PUBLIC_HOST}" != "localhost" ]] && curl -sf --max-time 2 "http://${PUBLIC_HOST}:${UIPORT}" >/dev/null 2>&1; then
+      ui_url="http://${PUBLIC_HOST}:${UIPORT}"
+    fi
+    for _ in $(seq 1 30); do
+      if curl -sf --max-time 2 "http://localhost:${UIPORT}" >/dev/null 2>&1; then
+        open_url "${ui_url}"
+        exit 0
+      fi
+      sleep 2
+    done
+  ) &
+fi
+
 # ---------- final status ----------
 echo ""
 echo "═══════════════════════════════════════════════════════════════"
