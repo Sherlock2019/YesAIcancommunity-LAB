@@ -17,6 +17,7 @@ from urllib.parse import urlencode, urlparse
 import streamlit as st
 
 from services.ui.utils.meta_store import load_json as load_meta_json
+from services.ui.utils.ontology_flow import render_ontology_flowchart
 from services.ui.utils.style import render_nav_bar_app
 from services.ui.theme_manager import get_theme, set_theme
 from typing import Dict, List, Any
@@ -5377,14 +5378,7 @@ def render_navigation_center(current_agents, feedback_data, auth_user) -> None:
             "page": "pages/agent_library.py",
             "renderer": lambda: render_agent_library_table(current_agents, feedback_data),
         },
-        {
-            "icon": "🧬",
-            "label": "Digital Twin",
-            "description": "Explore the My Company Digital Twin ontology layer.",
-            "page": "pages/ontology_twin.py",
-            "renderer": render_digital_twin_preview,
-        },
-        # Ontology & Patterns moved to the top of the page (above Quick Access).
+        # Digital Twin and Ontology & Patterns moved to the top of the page (above Quick Access).
         {
             "icon": "📚",
             "label": "Docs & Learning",
@@ -5759,8 +5753,14 @@ with c2:
     render_help_intro()
     render_login_cta(auth_user)
 
-    # Ontology section pinned to the top, above Quick Access
+    # Digital Twin + Ontology sections pinned to the top, above Quick Access
     st.markdown("<div class='nav-center-wrapper'><div class='nav-command-grid'><div class='nav-mini-block'>", unsafe_allow_html=True)
+    if st.button("🧬 Digital Twin", key="nav_top_digital_twin", use_container_width=True):
+        go_to_page("pages/ontology_twin.py")
+    st.markdown("<div class='nav-mini-desc'>Explore the My Company Digital Twin ontology layer.</div>", unsafe_allow_html=True)
+    render_digital_twin_preview()
+    render_ontology_flowchart(height=560, title="#### 🗺️ Ontology Flow Chart — live view of the twin")
+    st.markdown("</div><div class='nav-mini-block'>", unsafe_allow_html=True)
     if st.button("🧠 Ontology & Patterns", key="nav_top_ontology", use_container_width=True):
         go_to_page("pages/ontology_patterns.py")
     st.markdown("<div class='nav-mini-desc'>Reusable logic, prompts, and governance templates.</div>", unsafe_allow_html=True)
