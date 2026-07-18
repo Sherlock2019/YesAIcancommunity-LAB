@@ -423,7 +423,7 @@ start_ollama() {
   log_info "Starting Ollama server on port ${OLLAMA_PORT}..."
   
   # Start Ollama serve in background
-  nohup ollama serve > "${OLLAMA_LOG}" 2>&1 &
+  nohup setsid ollama serve > "${OLLAMA_LOG}" 2>&1 < /dev/null &
   
   local ollama_pid=$!
   echo "${ollama_pid}" > "${pid_file}"
@@ -584,12 +584,12 @@ start_api() {
   
   # Use python -m uvicorn for better venv compatibility
   # Only watch services directory to avoid temp file reload loops
-  nohup "${python_cmd}" -m uvicorn services.api.main:app \
+  nohup setsid "${python_cmd}" -m uvicorn services.api.main:app \
       --host 0.0.0.0 --port "${APIPORT}" \
       --reload-dir "${ROOT}/services" \
       --access-log \
       --log-level debug \
-      > "${API_LOG}" 2>&1 &
+      > "${API_LOG}" 2>&1 < /dev/null &
   
   local api_pid=$!
   echo "${api_pid}" > "${pid_file}"
@@ -651,12 +651,12 @@ start_ui() {
   fi
   
   # Use python -m streamlit for better venv compatibility
-  nohup "${python_cmd}" -m streamlit run "app.py" \
+  nohup setsid "${python_cmd}" -m streamlit run "app.py" \
       --server.port "${UIPORT}" \
       --server.address 0.0.0.0 \
       --server.fileWatcherType none \
       --logger.level error \
-      > "${UI_LOG}" 2>&1 &
+      > "${UI_LOG}" 2>&1 < /dev/null &
   
   local ui_pid=$!
   echo "${ui_pid}" > "${pid_file}"
@@ -694,8 +694,8 @@ start_log_monitor() {
   local pid_file="${ROOT}/.pids/logmonitor.pid"
   PID_FILES+=("${pid_file}")
   
-  # Start log monitor in background (non-blocking)
-  nohup bash -c "
+  # Start log monitor in background (non-blocking, own session)
+  nohup setsid bash -c "
     tail -n +1 -F '${API_LOG}' '${UI_LOG}' '${OLLAMA_LOG}' 2>/dev/null \
       | grep -v 'missing ScriptRunContext' \
       | awk '{print strftime(\"%Y-%m-%d %H:%M:%S\"), \"[STREAM]\", \$0 }' \
@@ -723,18 +723,47 @@ start_log_monitor
   fi
 ) &
 
+# ---------- detect public IP for displayed URLs ----------
+detect_public_ip() {
+  # Explicit override always wins
+  if [[ -n "${PUBLIC_IP:-}" ]]; then
+    echo "${PUBLIC_IP}"
+    return 0
+  fi
+  local ip="" token=""
+  # AWS EC2 instance metadata (IMDSv2, then IMDSv1 fallback)
+  token="$(curl -s --max-time 1 -X PUT "http://169.254.169.254/latest/api/token" \
+    -H "X-aws-ec2-metadata-token-ttl-seconds: 60" 2>/dev/null || true)"
+  if [[ -n "${token}" ]]; then
+    ip="$(curl -s --max-time 1 -H "X-aws-ec2-metadata-token: ${token}" \
+      "http://169.254.169.254/latest/meta-data/public-ipv4" 2>/dev/null || true)"
+  fi
+  if [[ -z "${ip}" ]]; then
+    ip="$(curl -s --max-time 1 "http://169.254.169.254/latest/meta-data/public-ipv4" 2>/dev/null || true)"
+  fi
+  # Generic cloud/bare-metal fallback: public IP lookup service
+  if [[ -z "${ip}" ]]; then
+    ip="$(curl -s --max-time 2 https://api.ipify.org 2>/dev/null || true)"
+  fi
+  echo "${ip}"
+}
+
+PUBLIC_HOST="$(detect_public_ip)"
+if [[ -z "${PUBLIC_HOST}" ]]; then
+  PUBLIC_HOST="localhost"
+fi
+
 # ---------- final status ----------
 echo ""
 echo "═══════════════════════════════════════════════════════════════"
 color_echo green "🎯 Services started!"
 echo ""
 color_echo blue "📘 Swagger API Docs:"
-echo "   http://localhost:${APIPORT}/docs"
+echo "   http://${PUBLIC_HOST}:${APIPORT}/docs"
 echo ""
 color_echo blue "🌐 Web UI:"
-echo "   http://localhost:${UIPORT} (primary)"
-echo "   http://127.0.0.1:${UIPORT} (localhost)"
-echo "   http://0.0.0.0:${UIPORT} (all interfaces)"
+echo "   http://${PUBLIC_HOST}:${UIPORT} (public)"
+echo "   http://localhost:${UIPORT} (local)"
 echo ""
 color_echo blue "🤖 Ollama Server:"
 echo "   ${OLLAMA_URL}"
