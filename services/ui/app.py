@@ -5753,7 +5753,9 @@ with c2:
     render_help_intro()
     render_login_cta(auth_user)
 
-    # Digital Twin + Ontology sections pinned to the top, above Quick Access
+    render_quick_access(auth_user, origin="right")
+
+    # Digital Twin + Ontology sections pinned right after Quick Access
     st.markdown("<div class='nav-center-wrapper'><div class='nav-command-grid'><div class='nav-mini-block'>", unsafe_allow_html=True)
     if st.button("🧬 Digital Twin", key="nav_top_digital_twin", use_container_width=True):
         go_to_page("pages/ontology_twin.py")
@@ -5766,8 +5768,6 @@ with c2:
     st.markdown("<div class='nav-mini-desc'>Reusable logic, prompts, and governance templates.</div>", unsafe_allow_html=True)
     render_ontology_table()
     st.markdown("</div></div></div>", unsafe_allow_html=True)
-
-    render_quick_access(auth_user, origin="right")
     render_help_hub_layer(auth_user)
 
     status_col, toggle_col = st.columns([3, 1])
