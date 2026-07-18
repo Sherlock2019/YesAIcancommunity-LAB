@@ -5384,13 +5384,7 @@ def render_navigation_center(current_agents, feedback_data, auth_user) -> None:
             "page": "pages/ontology_twin.py",
             "renderer": render_digital_twin_preview,
         },
-        {
-            "icon": "🧠",
-            "label": "Ontology & Patterns",
-            "description": "Reusable logic, prompts, and governance templates.",
-            "page": "pages/ontology_patterns.py",
-            "renderer": render_ontology_table,
-        },
+        # Ontology & Patterns moved to the top of the page (above Quick Access).
         {
             "icon": "📚",
             "label": "Docs & Learning",
@@ -5764,6 +5758,15 @@ with c2:
     )
     render_help_intro()
     render_login_cta(auth_user)
+
+    # Ontology section pinned to the top, above Quick Access
+    st.markdown("<div class='nav-center-wrapper'><div class='nav-command-grid'><div class='nav-mini-block'>", unsafe_allow_html=True)
+    if st.button("🧠 Ontology & Patterns", key="nav_top_ontology", use_container_width=True):
+        go_to_page("pages/ontology_patterns.py")
+    st.markdown("<div class='nav-mini-desc'>Reusable logic, prompts, and governance templates.</div>", unsafe_allow_html=True)
+    render_ontology_table()
+    st.markdown("</div></div></div>", unsafe_allow_html=True)
+
     render_quick_access(auth_user, origin="right")
     render_help_hub_layer(auth_user)
 

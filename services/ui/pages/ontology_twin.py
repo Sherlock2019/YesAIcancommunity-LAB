@@ -6,6 +6,7 @@ import html
 from typing import Any, Dict, Iterable, List
 
 import streamlit as st
+import streamlit.components.v1 as components
 
 from ontology.examples import build_example_graph
 from ontology.registry import OntologyRegistry
@@ -247,6 +248,65 @@ def render_supporting_layers() -> None:
             )
 
 
+def _mermaid_node_id(name: str) -> str:
+    return "BU_" + "".join(ch if ch.isalnum() else "_" for ch in name)
+
+
+def build_ontology_mermaid() -> str:
+    """Auto-generate a mermaid flowchart from the twin's units, flows, and layers."""
+    lines = ["flowchart LR"]
+    lines.append('    subgraph UNITS["🏢 Business Units"]')
+    for unit in BUSINESS_UNITS:
+        nid = _mermaid_node_id(unit["name"])
+        label = f'{unit["name"]}<br/><i>{unit["head"]} · {unit["region"]}</i>'
+        lines.append(f'        {nid}["{label}"]')
+    lines.append("    end")
+    lines.append('    subgraph LAYERS["🪄 Enabling Layers"]')
+    for idx, layer in enumerate(SUPPORTING_LAYERS):
+        items = "<br/>".join(layer["items"])
+        lines.append(f'        LAYER{idx}["<b>{layer["label"]}</b><br/>{items}"]')
+    lines.append("    end")
+    for rel in RELATIONSHIPS:
+        src = _mermaid_node_id(rel["source"])
+        flow = rel["flow"].replace('"', "'")
+        if rel["target"] == "All units":
+            for unit in BUSINESS_UNITS:
+                if unit["name"] == rel["source"]:
+                    continue
+                lines.append(f'    {src} -. "🛡️ guardrails" .-> {_mermaid_node_id(unit["name"])}')
+        else:
+            tgt = _mermaid_node_id(rel["target"])
+            lines.append(f'    {src} -- "{flow} ({rel["cadence"]})" --> {tgt}')
+    lines.append("    LAYERS --- UNITS")
+    lines.append("    classDef bu fill:#0f172a,stroke:#38bdf8,color:#e2e8f0,stroke-width:2px;")
+    lines.append("    classDef layer fill:#1e1b4b,stroke:#c084fc,color:#e2e8f0,stroke-width:2px;")
+    lines.append("    classDef guard fill:#0f172a,stroke:#f87171,color:#fecaca,stroke-width:2px;")
+    for unit in BUSINESS_UNITS:
+        cls = "guard" if unit["name"] == "Security, Risk & Compliance" else "bu"
+        lines.append(f"    class {_mermaid_node_id(unit['name'])} {cls};")
+    for idx in range(len(SUPPORTING_LAYERS)):
+        lines.append(f"    class LAYER{idx} layer;")
+    return "\n".join(lines)
+
+
+def render_ontology_flowchart() -> None:
+    st.markdown("### 🗺️ Ontology Flow Chart — auto-generated from the twin")
+    mermaid_code = build_ontology_mermaid()
+    components.html(
+        f"""
+        <div style="background:#0b1220;border:1px solid rgba(56,189,248,0.35);border-radius:16px;padding:12px;overflow:auto;">
+          <pre class="mermaid" style="background:transparent;margin:0;">{mermaid_code}</pre>
+        </div>
+        <script type="module">
+          import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+          mermaid.initialize({{ startOnLoad: true, theme: "dark", securityLevel: "loose", flowchart: {{ curve: "basis" }} }});
+        </script>
+        """,
+        height=680,
+        scrolling=True,
+    )
+
+
 def render_ontology_snapshot() -> None:
     registry = build_example_graph(OntologyRegistry())
     graph = registry.all()
@@ -264,6 +324,7 @@ st.title("🧬 My Company Digital Twin — Ontology Layer")
 st.caption("Palantir-style living map of business units, flows, AI assets, and policy guardrails.")
 
 render_metrics()
+render_ontology_flowchart()
 
 query_params = st.query_params
 requested = _normalize(query_params.get("bu") or query_params.get("business_unit"))
