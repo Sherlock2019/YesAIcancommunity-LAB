@@ -87,6 +87,20 @@ def create_app() -> FastAPI:
     app.include_router(challenges.router)
     app.include_router(solutions.router)
 
+    # Production Factory — the CloudJumper bridge. Imported lazily and guarded
+    # so a missing dependency cannot stop the Challenge Hub API from booting.
+    try:
+        from integrations.cloudjumper import is_enabled as _cj_enabled
+
+        if _cj_enabled():
+            from services.api.routers import production_factory
+
+            app.include_router(production_factory.router)
+        else:
+            print("[STARTUP] Production Factory disabled by CLOUDJUMPER_PRODUCTION_FACTORY_ENABLED")
+    except Exception as exc:  # pragma: no cover - startup resilience
+        print(f"[STARTUP] Production Factory unavailable: {exc}")
+
     return app
 
 
