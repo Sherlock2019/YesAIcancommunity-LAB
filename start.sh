@@ -108,7 +108,12 @@ if [[ -z "${PUBLIC_HOST:-}" ]]; then
   fi
 fi
 UI_URL="http://${PUBLIC_HOST}:${UIPORT}${BASE_URL_PATH:+/${BASE_URL_PATH}}"
-API_URL="http://${PUBLIC_HOST}:${APIPORT}"
+# For display only. Deliberately NOT named API_URL: the UI pages read API_URL
+# for their *server-side* calls, and if this script ever wrote the public
+# address into it (e.g. when API_URL is already exported in the shell), the UI
+# would reach its own API out through the internet and back in through the
+# security group.
+API_PUBLIC_URL="http://${PUBLIC_HOST}:${APIPORT}"
 
 # ─────────────────────────────────────────────
 # 🧹 PRE-CLEANUP — Kill old processes on used ports
@@ -367,7 +372,14 @@ color_echo green "✅ API started (PID=$(cat "${ROOT}/.pids/api.pid")) | log: ${
 stop_if_running "UI" "${ROOT}/.pids/ui.pid"
 color_echo blue "Starting Streamlit UI..."
 cd "${ROOT}/services/ui"
-nohup "${VENV}/bin/streamlit" run "app.py" "${STREAMLIT_ARGS[@]}" > "${UI_LOG}" 2>&1 &
+# The UI pages call the API from the *server* (Streamlit runs Python there),
+# so they use loopback -- never the public address -- and they must use the
+# port the API was actually started on. The pages' built-in default is 8090,
+# which does not match APIPORT (8100), so without this the API-backed pages
+# cannot reach the API at all. Both variable names are read by the pages.
+UI_API_URL="${API_URL:-http://127.0.0.1:${APIPORT}}"
+API_URL="${UI_API_URL}" AGENT_API_URL="${AGENT_API_URL:-${UI_API_URL}}" \
+  nohup "${VENV}/bin/streamlit" run "app.py" "${STREAMLIT_ARGS[@]}" > "${UI_LOG}" 2>&1 &
 echo $! > "${ROOT}/.pids/ui.pid"
 cd "${ROOT}"
 color_echo green "✅ UI started (PID=$(cat "${ROOT}/.pids/ui.pid")) | log: ${UI_LOG}"
@@ -378,7 +390,7 @@ color_echo green "✅ UI started (PID=$(cat "${ROOT}/.pids/ui.pid")) | log: ${UI
 echo "----------------------------------------------------"
 color_echo blue "🎯 All services running!"
 color_echo blue "🌐 Web UI:  ${UI_URL}"
-color_echo blue "📘 Swagger: ${API_URL}/docs"
+color_echo blue "📘 Swagger: ${API_PUBLIC_URL}/docs"
 color_echo blue "📂 Logs:    ${LOGDIR}"
 [[ "${PUBLIC_HOST}" != "localhost" ]] && \
   color_echo blue "🔐 Open ports ${UIPORT} (and ${APIPORT}) in the security group to reach these."
@@ -409,7 +421,7 @@ wait_for_http() {
 # never existed and made this step always report failure.
 API_STATUS=$(wait_for_http "http://127.0.0.1:${APIPORT}/health" 20)
 if [[ "${API_STATUS}" == "200" ]]; then
-  color_echo green "API OK (HTTP 200) → ${API_URL}  (docs: ${API_URL}/docs)"
+  color_echo green "API OK (HTTP 200) → ${API_PUBLIC_URL}  (docs: ${API_PUBLIC_URL}/docs)"
 else
   color_echo red "API health check failed (status=${API_STATUS:-unreachable}) — check ${API_LOG}"
 fi
