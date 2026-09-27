@@ -162,9 +162,39 @@ OLLAMA_LOG="${LOGDIR}/ollama_${TS}.log"
 # ─────────────────────────────────────────────
 # Virtual environment
 # ─────────────────────────────────────────────
-if [[ ! -d "$VENV" ]]; then
-  python3 -m venv "$VENV"
-fi
+# A venv is usable only with a working python AND an activate script. On
+# Ubuntu/Debian `python3 -m venv` fails half-way when the python3-venv
+# package is missing: it leaves .venv/ behind with no bin/activate, so a
+# plain "does the directory exist?" check fails on every later run.
+venv_ok() {
+  [[ -x "${VENV}/bin/python" && -f "${VENV}/bin/activate" ]] \
+    && "${VENV}/bin/python" -c 'import sys' >/dev/null 2>&1
+}
+ensure_venv() {
+  venv_ok && return 0
+  if [[ -e "$VENV" ]]; then
+    color_echo yellow "⚠  ${VENV} is incomplete (a failed earlier setup) — recreating it."
+    rm -rf "$VENV"
+  fi
+  if python3 -m venv "$VENV" >/dev/null 2>&1 && venv_ok; then return 0; fi
+  rm -rf "$VENV"
+  # Almost always: the python3-venv package is not installed.
+  if command -v apt-get >/dev/null 2>&1 && command -v sudo >/dev/null 2>&1; then
+    local pyver
+    pyver="$(python3 -c 'import sys; print(f"{sys.version_info[0]}.{sys.version_info[1]}")' 2>/dev/null || true)"
+    color_echo blue "📦 Installing python3-venv, needed to create the virtual environment (sudo)..."
+    sudo apt-get update -qq || true
+    sudo apt-get install -y -qq ${pyver:+"python${pyver}-venv"} python3-venv python3-pip >/dev/null 2>&1 \
+      || sudo apt-get install -y -qq python3-venv python3-pip >/dev/null 2>&1 || true
+    if python3 -m venv "$VENV" >/dev/null 2>&1 && venv_ok; then return 0; fi
+    rm -rf "$VENV"
+  fi
+  color_echo red "❌ Could not create the Python virtual environment at ${VENV}."
+  color_echo red "   On Ubuntu/Debian run:  sudo apt-get install -y python3-venv python3-pip"
+  color_echo red "   then re-run ./start.sh"
+  exit 1
+}
+ensure_venv
 # shellcheck disable=SC1091
 source "${VENV}/bin/activate"
 

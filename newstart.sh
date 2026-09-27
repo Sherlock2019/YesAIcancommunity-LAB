@@ -454,23 +454,45 @@ log_success "API/UI ports cleared"
 # ---------- Python venv setup ----------
 log_info "Setting up Python virtual environment..."
 
-if [[ ! -d "${VENV}" ]]; then
+# A venv is usable only with a working python AND an activate script. On
+# Ubuntu/Debian `python3 -m venv` fails half-way when the python3-venv
+# package is missing: it leaves .venv/ behind with no bin/activate, so the
+# old "does the directory exist?" check failed on every later run -- and the
+# corruption check below it came after the activate that had already failed.
+venv_ok() {
+  [[ -x "${VENV}/bin/python" && -f "${VENV}/bin/activate" ]] \
+    && "${VENV}/bin/python" -c 'import sys' >/dev/null 2>&1
+}
+ensure_venv() {
+  venv_ok && return 0
+  if [[ -e "${VENV}" ]]; then
+    log_warn "${VENV} is incomplete (a failed earlier setup) -- recreating it."
+    rm -rf "${VENV}"
+  fi
   log_info "Creating virtual environment..."
-  python3 -m venv "${VENV}" || { log_error "Failed to create venv"; exit 1; }
-fi
+  if python3 -m venv "${VENV}" >/dev/null 2>&1 && venv_ok; then return 0; fi
+  rm -rf "${VENV}"
+  # Almost always: the python3-venv package is not installed.
+  if command -v apt-get >/dev/null 2>&1 && command -v sudo >/dev/null 2>&1; then
+    local pyver
+    pyver="$(python3 -c 'import sys; print(f"{sys.version_info[0]}.{sys.version_info[1]}")' 2>/dev/null || true)"
+    log_info "Installing python3-venv, needed to create the virtual environment (sudo)..."
+    sudo apt-get update -qq || true
+    sudo apt-get install -y -qq ${pyver:+"python${pyver}-venv"} python3-venv python3-pip >/dev/null 2>&1 \
+      || sudo apt-get install -y -qq python3-venv python3-pip >/dev/null 2>&1 || true
+    if python3 -m venv "${VENV}" >/dev/null 2>&1 && venv_ok; then return 0; fi
+    rm -rf "${VENV}"
+  fi
+  log_error "Could not create the Python virtual environment at ${VENV}."
+  log_error "On Ubuntu/Debian run:  sudo apt-get install -y python3-venv python3-pip   then re-run ./newstart.sh"
+  exit 1
+}
+ensure_venv
 
 # shellcheck disable=SC1091
 source "${VENV}/bin/activate" || { log_error "Failed to activate venv"; exit 1; }
 
 export STREAMLIT_LEGACY_RERUN=true
-
-# Verify venv is working
-if [[ ! -f "${VENV}/bin/python" ]] || ! "${VENV}/bin/python" --version >/dev/null 2>&1; then
-  log_warn "Virtual environment appears corrupted. Recreating..."
-  rm -rf "${VENV}"
-  python3 -m venv "${VENV}" || { log_error "Failed to recreate venv"; exit 1; }
-  source "${VENV}/bin/activate" || { log_error "Failed to activate recreated venv"; exit 1; }
-fi
 
 PYTHON_BIN="${VENV}/bin/python"
 PIP_BIN="${VENV}/bin/pip"
