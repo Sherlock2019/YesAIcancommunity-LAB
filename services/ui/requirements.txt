@@ -7,6 +7,10 @@ pandas>=2.2
 # with scikit-learn.
 numpy>=1.26,<2
 scikit-learn>=1.4,<1.5
+# Follows from the numpy pin. pyarrow (pulled in by streamlit) 26.0 refuses
+# numpy 1.x at import time without declaring it in its metadata, so pip
+# installs it anyway and every st.*_chart call fails. Lift with numpy.
+pyarrow>=14,<25
 shap>=0.45
 fpdf2>=2.7
 python-multipart>=0.0.9
